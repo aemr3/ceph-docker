@@ -6,7 +6,7 @@ LABEL Maintainer="Sebastien Han 'seb@redhat.com'"
 
 ENV container docker
 
-ARG PACKAGES="ceph-mon ceph-osd ceph-mds ceph-radosgw rbd-mirror nfs-ganesha-rgw e2fsprogs"
+ARG PACKAGES="ceph-mon ceph-osd ceph-mds ceph-radosgw rbd-mirror nfs-ganesha-rgw e2fsprogs s3cmd"
 RUN yum -y update && \
     yum -y install $PACKAGES && \
     rpm -q $PACKAGES && \
@@ -22,6 +22,9 @@ VOLUME ["/etc/ceph","/var/lib/ceph","/etc/ganesha"]
 
 # Add bootstrap script, ceph defaults key/values for KV store
 ADD *.sh ceph.defaults check_zombie_mons.py ./osd_scenarios/* entrypoint.sh.in disabled_scenario /
+
+# Add s3cfg file
+ADD s3cfg /root/.s3cfg
 
 # Modify the entrypoint
 RUN chmod +x /generate_entrypoint.sh && \
